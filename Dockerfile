@@ -4,6 +4,9 @@ FROM browserless/chrome:latest
 # Set the working directory inside the container
 WORKDIR /app
 
+# Use root for installations
+USER root
+
 # Copy the local code to the container
 COPY . .
 
@@ -22,6 +25,9 @@ RUN pip3 install selenium beautifulsoup4 sqlalchemy openai Web3 eth_account goog
 
 # Copy the necessary scripts to a directory in PATH
 RUN cp x_analyzer.py x_token_deploy.py /usr/local/bin/
+
+# Switch back to non-root user
+USER browserless
 
 # Configure for Cloud Logging
 # Anything written to stdout/stderr will be captured and appear in Cloud Logging
