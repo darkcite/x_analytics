@@ -19,5 +19,8 @@ RUN cp x_analyzer.py x_token_deploy.py /usr/local/bin/
 # Configure for Cloud Logging
 # Anything written to stdout/stderr will be captured and appear in Cloud Logging
 
+# Expose port for Cloud Run
+EXPOSE 8080
+
 # Set the command to run your application
-CMD ["python3", "/usr/local/bin/x_analyzer.py"]
+CMD ["bash", "run_scripts.sh"]
