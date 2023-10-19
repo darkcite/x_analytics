@@ -1,20 +1,20 @@
 # Use rapidfort/python-chromedriver as the base image
-FROM rapidfort/python-chromedriver:latest
+FROM python:3
 
 # Set the working directory inside the container
-WORKDIR /app
+WORKDIR /usr/src/app
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the local code to the container
 COPY . .
 
-# Upgrade pip
-RUN pip install --upgrade pip
-
 # Install Python libraries
-RUN pip install selenium beautifulsoup4 sqlalchemy openai Web3 eth_account google-cloud-secret-manager cloud-sql-python-connector google-cloud-storage sqlalchemy-pytds
+# RUN pip install selenium beautifulsoup4 sqlalchemy openai Web3 eth_account google-cloud-secret-manager cloud-sql-python-connector google-cloud-storage sqlalchemy-pytds
 
 # Copy the necessary scripts to a directory in PATH
-RUN cp x_analyzer.py x_token_deploy.py /usr/local/bin/
+# RUN cp x_analyzer.py x_token_deploy.py /usr/local/bin/
 
 # Configure for Cloud Logging
 # Anything written to stdout/stderr will be captured and appear in Cloud Logging
