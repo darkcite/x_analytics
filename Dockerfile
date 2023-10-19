@@ -1,13 +1,20 @@
-FROM gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+FROM python:3.11
 
-# Set the working directory
-WORKDIR /workspace
-
-# Copy the application code into the container
+RUN pip install --upgrade pip
+RUN pip install flask
 COPY . /workspace
 
-# Run the application code
 CMD ["python", "main.py"]
+# FROM gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+
+# # Set the working directory
+# WORKDIR /workspace
+
+# # Copy the application code into the container
+# COPY . /workspace
+
+# # Run the application code
+# CMD ["python", "main.py"]
 
 
 # # Use the official Google Cloud SDK image as the base image
