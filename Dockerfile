@@ -21,7 +21,17 @@ WORKDIR /app
 #     ttf-ubuntu-font-family \
 #     && tar xzvf google-chrome-stable_current_amd64.deb && \
 #     rm google-chrome-stable_current_amd64.deb
-RUN apk add python3
+# RUN apk add python3
+
+RUN apt-get update -y && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get update -y && \
+    apt-get install -y python3.11 python3.11-venv python3.11-dev && \
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
+
+# Check Python version
+RUN python3 --version
 
 # copy the requirements file used for dependencies
 COPY requirements.txt .
