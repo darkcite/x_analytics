@@ -8,3 +8,4 @@ google-cloud-secret-manager
 cloud-sql-python-connector
 google-cloud-storage
 sqlalchemy-pytds
+flask
