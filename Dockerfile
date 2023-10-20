@@ -62,6 +62,17 @@ COPY requirements.txt .
 # Install any needed packages specified in requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
+# Install Google Chrome
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable
+
+# Clean up
+RUN apt-get purge --auto-remove -y curl gnupg \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy the rest of the working directory contents into the container at /app
 COPY . .
 
