@@ -1,6 +1,6 @@
 # Python image to use.
-FROM python:3.11
-
+# FROM python:3.11
+FROM ubuntu:latest
 # Set the working directory to /app
 WORKDIR /app
 
