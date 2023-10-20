@@ -1,10 +1,20 @@
-FROM python:3.11
+# Python image to use.
+FROM python:3.11-alpine
 
-RUN pip install --upgrade pip
-RUN pip install flask
-COPY . /workspace
+# Set the working directory to /app
+WORKDIR /app
 
-CMD ["python", "main.py"]
+# copy the requirements file used for dependencies
+COPY requirements.txt .
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
+
+# Copy the rest of the working directory contents into the container at /app
+COPY . .
+
+# Run app.py when the container launches
+ENTRYPOINT ["python", "main.py"]
 # FROM gcr.io/google.com/cloudsdktool/cloud-sdk:slim
 
 # # Set the working directory
@@ -16,6 +26,7 @@ CMD ["python", "main.py"]
 # # Run the application code
 # CMD ["python", "main.py"]
 
+# gcr.io/cloud-builders/gcloud
 
 # # Use the official Google Cloud SDK image as the base image
 # FROM google/cloud-sdk:latest
