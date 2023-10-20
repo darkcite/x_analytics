@@ -1,5 +1,6 @@
 # Python image to use.
-FROM python:3.11-alpine
+# FROM python:3.11-alpine
+FROM selenium/standalone-chrome:latest
 
 # Set the working directory to /app
 WORKDIR /app
@@ -27,9 +28,9 @@ COPY requirements.txt .
 # Install any needed packages specified in requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
-RUN apk add --update alsa-lib atk at-spi2-atk expat glib gtk+3.0 libdrm libx11 libxcomposite libxcursor libxdamage libxext libxi libxrandr libxscrnsaver libxshmfence libxtst mesa-gbm nss pango.
-RUN curl -L https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o google-chrome-stable_current_amd64.deb
-RUN dpkg -i google-chrome-stable_current_amd64.deb
+# RUN apk add --update alsa-lib atk at-spi2-atk expat glib gtk+3.0 libdrm libx11 libxcomposite libxcursor libxdamage libxext libxi libxrandr libxscrnsaver libxshmfence libxtst mesa-gbm nss pango.
+# RUN curl -L https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o google-chrome-stable_current_amd64.deb
+# RUN dpkg -i google-chrome-stable_current_amd64.deb
 
 # Copy the rest of the working directory contents into the container at /app
 COPY . .
