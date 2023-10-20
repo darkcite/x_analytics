@@ -17,6 +17,10 @@ from sqlalchemy import text
 from google.cloud import secretmanager
 from google.cloud import storage
 import re
+import random
+from google.cloud import secretmanager, storage
+from google.cloud.secretmanager_v1.types import SecretVersion
+import time
 
 import json
 import openai
@@ -26,6 +30,27 @@ def get_secret(secret_name):
     secret_client = secretmanager.SecretManagerServiceClient()
     name = f"projects/{project_name}/secrets/{secret_name}/versions/latest"
     response = secret_client.access_secret_version(request={"name": name})
+    return response.payload.data.decode('UTF-8')
+
+def get_random_secret(secret_name):
+    project_name = storage.Client().project
+    secret_client = secretmanager.SecretManagerServiceClient()
+    
+    # List all versions of the secret
+    secret_versions = secret_client.list_secret_versions(request={"parent": f"projects/{project_name}/secrets/{secret_name}"})
+    
+    # Filter out only the 'ENABLED' versions
+    enabled_versions = [version for version in secret_versions if version.state == SecretVersion.State.ENABLED]
+    
+    # If there are no enabled versions, return None or raise an error
+    if not enabled_versions:
+        return None
+
+    # Randomly select one of the enabled versions
+    random_version = random.choice(enabled_versions)
+
+    # Access the random version's payload
+    response = secret_client.access_secret_version(request={"name": random_version.name})
     return response.payload.data.decode('UTF-8')
 
 USERNAME = 'elonmusk'
@@ -42,7 +67,7 @@ CLOUD_DB_NAME = get_secret("CLOUD_DB_NAME")
 INSTANCE_CONNECTION_NAME = get_secret("INSTANCE_CONNECTION_NAME")
 
 # [Your parsed cookies go here]
-X_COOKIES = json.loads(get_secret("X_COOKIES"))
+X_COOKIES = json.loads(get_random_secret("X_COOKIES"))
 
 #####################
 ip_type = IPTypes.PUBLIC  # Assuming you're using the public IP
@@ -90,11 +115,7 @@ def get_page_source():
     browser = webdriver.Chrome(options=chrome_options)
     apply_cookies(browser)
     browser.get(PROFILE_URL)
-    try:
-        element_present = EC.presence_of_element_located((By.XPATH, '//div[@data-testid="tweet"]'))
-        WebDriverWait(browser, 8).until(element_present)
-    except TimeoutException:
-        print("Timed out waiting for page to load")
+    time.sleep(10 + random.uniform(0, 2))   
     page_source = browser.page_source
     browser.quit()
     return page_source
@@ -288,8 +309,7 @@ def store_and_process_tweets_core(data):
 
 
 def main():
-    content = get_page_source()
-        
+    content = get_page_source()        
     # with open(OUTPUT_FILE, 'w', encoding='utf-8') as file:
     #     file.write(content)
     # print("Page source written to " + OUTPUT_FILE)
