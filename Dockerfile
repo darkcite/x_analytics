@@ -13,11 +13,8 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 # Copy the rest of the working directory contents into the container at /app
 COPY . .
 
-# Expose the port
-EXPOSE 8080
-
 # Run app.py when the container launches
-ENTRYPOINT ["python", "main.py"]
+ENTRYPOINT ["python", "app.py"]
 # FROM gcr.io/google.com/cloudsdktool/cloud-sdk:slim
 
 # # Set the working directory
