@@ -22,8 +22,8 @@ WORKDIR /app
 #     && tar xzvf google-chrome-stable_current_amd64.deb && \
 #     rm google-chrome-stable_current_amd64.deb
 # RUN apk add python3
-RUN sudo apt install python3
-RUN sudo apt install google-chrome-stable
+RUN apt install python3
+RUN apt install google-chrome-stable
 
 # Check Python version
 RUN python3 --version
