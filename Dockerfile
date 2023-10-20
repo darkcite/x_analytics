@@ -11,8 +11,12 @@ COPY requirements.txt .
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 # Install Google Chrome
+RUN apt-get clean && apt-get update
+# Ensure non-interactive mode for apt-get
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y \
+# Clean APT cache, then update and install dependencies
+RUN apt-get clean && apt-get update && apt-get install -y \
     libxss1 \
     libappindicator1 \
     libindicator7 \
