@@ -66,6 +66,7 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 COPY . .
 
 EXPOSE 8080
+EXPOSE 3000
 
 # Run app.py when the container launches
 ENTRYPOINT ["python", "app.py"]

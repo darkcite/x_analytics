@@ -4,7 +4,7 @@ A sample Hello World server.
 import os
 
 from flask import Flask, render_template
-from x_analyzer import main as x_analyzer_main
+# from x_analyzer import main as x_analyzer_main
 
 # pylint: disable=C0103
 app = Flask(__name__)
