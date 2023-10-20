@@ -1,6 +1,6 @@
 # Python image to use.
 # FROM python:3.11-alpine
-FROM python:3.11-alpine-chrome
+FROM zenika/alpine-chrome
 
 # Set the working directory to /app
 WORKDIR /app
@@ -21,6 +21,7 @@ WORKDIR /app
 #     ttf-ubuntu-font-family \
 #     && tar xzvf google-chrome-stable_current_amd64.deb && \
 #     rm google-chrome-stable_current_amd64.deb
+RUN apk add python3
 
 # copy the requirements file used for dependencies
 COPY requirements.txt .
