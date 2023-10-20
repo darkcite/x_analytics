@@ -22,8 +22,31 @@ WORKDIR /app
 #     && tar xzvf google-chrome-stable_current_amd64.deb && \
 #     rm google-chrome-stable_current_amd64.deb
 # RUN apk add python3
-RUN apt update && \
-    apt install -y python3 python3-pip google-chrome-stable
+# Set environment variables to non-interactive (this prevents some prompts)
+ENV DEBIAN_FRONTEND=non-interactive
+
+# Install necessary utilities
+RUN apt-get update && apt-get install -y \
+    wget \
+    curl \
+    ca-certificates \
+    apt-transport-https \
+    gnupg \
+    --no-install-recommends
+
+# Install Python 3
+RUN apt-get install -y python3 python3-pip
+
+# Install Google Chrome
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable
+
+# Clean up
+RUN apt-get purge --auto-remove -y curl gnupg \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Check Python version
 RUN python3 --version
