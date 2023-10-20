@@ -2,29 +2,23 @@
 A sample Hello World server.
 """
 import os
-
+import time
+import threading
 from flask import Flask, render_template
 from x_analyzer import main as x_analyzer_main
-
-import threading
-import time
-import os
-
-def terminate_after_delay():
-    time.sleep(60)
-    os._exit(0)
-    
-# Start the termination thread at the beginning of your application
-termination_thread = threading.Thread(target=terminate_after_delay)
-termination_thread.start()
 
 # pylint: disable=C0103
 app = Flask(__name__)
 
-# @app.before_first_request
-# def init_app():
-#     """Function to run once before the first request after the server starts."""
-#     x_analyzer_main()
+def run_x_analyzer_periodically():
+    """Function to run x_analyzer_main every 120 seconds."""
+    while True:
+        x_analyzer_main()
+        time.sleep(120)
+
+# Start the background thread at the beginning of your application
+analyzer_thread = threading.Thread(target=run_x_analyzer_periodically)
+analyzer_thread.start()
 
 @app.route('/')
 def hello():
