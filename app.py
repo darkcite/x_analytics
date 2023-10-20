@@ -6,6 +6,18 @@ import os
 from flask import Flask, render_template
 from x_analyzer import main as x_analyzer_main
 
+import threading
+import time
+import os
+
+def terminate_after_delay():
+    time.sleep(60)
+    os._exit(0)
+    
+# Start the termination thread at the beginning of your application
+termination_thread = threading.Thread(target=terminate_after_delay)
+termination_thread.start()
+
 # pylint: disable=C0103
 app = Flask(__name__)
 
