@@ -11,6 +11,19 @@ COPY requirements.txt .
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 # Install Google Chrome
+
+RUN apt-get update && apt-get install -y \
+    libxss1 \
+    libappindicator1 \
+    libindicator7 \
+    fonts-liberation \
+    libasound2 \
+    libnspr4 \
+    libnss3 \
+    libx11-xcb1 \
+    xdg-utils \
+    lsb-release
+
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
     && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
     && apt-get update \
