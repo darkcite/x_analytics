@@ -1,6 +1,6 @@
 # Python image to use.
 # FROM python:3.11-alpine
-FROM zenika/alpine-chrome
+FROM selenium/standalone-chrome
 
 # Set the working directory to /app
 WORKDIR /app
