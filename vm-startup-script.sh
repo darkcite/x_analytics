@@ -24,7 +24,12 @@ sudo touch /var/log/x_log_file.log
 sudo chown $USER:$USER /var/log/x_log_file.log
 
 # Add the cron job
-(crontab -l; echo "* * * * * /usr/bin/python3 /usr/local/bin/x_analyzer.py >> /var/log/x_log_file.log 2>&1 && /usr/bin/python3 /usr/local/bin/x_token_deploy.py >> /var/log/x_log_file.log 2>&1") | crontab -
+(crontab -l; echo "* * * * * /usr/bin/python3 /usr/local/bin/x_analyzer.py 2>&1 | logger -t x_analyzer && /usr/bin/python3 /usr/local/bin/x_token_deploy.py 2>&1 | logger -t x_token_deploy") | crontab -
+
+
+
+
+# (crontab -l; echo "* * * * * /usr/bin/python3 /usr/local/bin/x_analyzer.py >> /var/log/x_log_file.log 2>&1 && /usr/bin/python3 /usr/local/bin/x_token_deploy.py >> /var/log/x_log_file.log 2>&1") | crontab -
 
 
 # sudo cp x_analyzer.py x_token_deploy.py /usr/local/bin/

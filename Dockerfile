@@ -4,12 +4,6 @@ FROM python:3.11
 # Set the working directory to /app
 WORKDIR /app
 
-# copy the requirements file used for dependencies
-COPY requirements.txt .
-
-# Install any needed packages specified in requirements.txt
-RUN pip install --trusted-host pypi.python.org -r requirements.txt
-
 # Install Google Chrome
 RUN apt-get clean && apt-get update
 # Ensure non-interactive mode for apt-get
@@ -32,6 +26,13 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
     && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
     && apt-get update \
     && apt-get install -y google-chrome-stable
+
+
+# copy the requirements file used for dependencies
+COPY requirements.txt .
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 # Clean up
 RUN apt-get purge --auto-remove -y curl gnupg \
