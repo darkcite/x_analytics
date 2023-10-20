@@ -37,6 +37,7 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
     && apt-get install -y google-chrome-stable
 
 
+RUN apt-get install -y python3 python3-pip
 # copy the requirements file used for dependencies
 COPY requirements.txt .
 
