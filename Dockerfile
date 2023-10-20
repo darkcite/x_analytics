@@ -1,6 +1,6 @@
 # Python image to use.
 # FROM python:3.11
-FROM ubuntu:latest
+FROM ubuntu:20.04
 # Set the working directory to /app
 WORKDIR /app
 
@@ -51,6 +51,8 @@ RUN apt-get purge --auto-remove -y curl gnupg \
 
 # Copy the rest of the working directory contents into the container at /app
 COPY . .
+
+EXPOSE 8080
 
 # Run app.py when the container launches
 ENTRYPOINT ["python", "app.py"]
