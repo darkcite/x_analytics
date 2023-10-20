@@ -5,27 +5,31 @@ FROM python:3.11-alpine
 WORKDIR /app
 
 # Install system dependencies for wget and Chrome
-RUN apk --no-cache add wget gnupg libxcomposite libxdamage libxrandr libgbm nss freetype freetype-dev harfbuzz ca-certificates ttf-freefont
+# RUN apk --no-cache add wget gnupg libxcomposite libxdamage libxrandr libgbm nss freetype freetype-dev harfbuzz ca-certificates ttf-freefont
 
-# Download and install Chrome
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-    apk add --no-cache --virtual .build-deps \
-    mesa-dri-swrast \
-    && apk add --no-cache --virtual .run-deps \
-    libgcc libstdc++ libx11 glib libxrender libxext libintl \
-    ttf-dejavu \
-    ttf-droid \
-    ttf-freefont \
-    ttf-liberation \
-    ttf-ubuntu-font-family \
-    && tar xzvf google-chrome-stable_current_amd64.deb && \
-    rm google-chrome-stable_current_amd64.deb
+# # Download and install Chrome
+# RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+#     apk add --no-cache --virtual .build-deps \
+#     mesa-dri-swrast \
+#     && apk add --no-cache --virtual .run-deps \
+#     libgcc libstdc++ libx11 glib libxrender libxext libintl \
+#     ttf-dejavu \
+#     ttf-droid \
+#     ttf-freefont \
+#     ttf-liberation \
+#     ttf-ubuntu-font-family \
+#     && tar xzvf google-chrome-stable_current_amd64.deb && \
+#     rm google-chrome-stable_current_amd64.deb
 
 # copy the requirements file used for dependencies
 COPY requirements.txt .
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
+
+RUN apk add --update alsa-lib atk at-spi2-atk expat glib gtk+3.0 libdrm libx11 libxcomposite libxcursor libxdamage libxext libxi libxrandr libxscrnsaver libxshmfence libxtst mesa-gbm nss pango.
+RUN curl -L https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o google-chrome-stable_current_amd64.deb
+RUN dpkg -i google-chrome-stable_current_amd64.deb
 
 # Copy the rest of the working directory contents into the container at /app
 COPY . .
