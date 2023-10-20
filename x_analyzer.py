@@ -148,15 +148,15 @@ def extract_tweets_with_data(html_content):
                 tweet_data['likes'] = metrics[2].get_text().strip()
 
         tweet_data_list.append(tweet_data)
-
+        if not tweet_data_list:
+                print(">>> Access issue detected or cookies might have expired. <<<")
+                return []
     # tweet_data_list = sorted(tweet_data_list, key=lambda x: x['timestamp'], reverse=True)
     tweet_data_list = sorted(tweet_data_list, key=lambda x: x.get('timestamp', ''), reverse=True)
 
     return tweet_data_list
 
 ###############
-
-import re
 
 def extract_keywords_from_text(text):
     # Split the text into words, filter out words with 3 characters or fewer, and only select words that consist of letters only
