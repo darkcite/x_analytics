@@ -4,6 +4,23 @@ FROM python:3.11-alpine
 # Set the working directory to /app
 WORKDIR /app
 
+# Install system dependencies for wget and Chrome
+RUN apk --no-cache add wget gnupg libxcomposite libxdamage libxrandr libgbm nss freetype freetype-dev harfbuzz ca-certificates ttf-freefont
+
+# Download and install Chrome
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    apk add --no-cache --virtual .build-deps \
+    mesa-dri-swrast \
+    && apk add --no-cache --virtual .run-deps \
+    libgcc libstdc++ libx11 glib libxrender libxext libintl \
+    ttf-dejavu \
+    ttf-droid \
+    ttf-freefont \
+    ttf-liberation \
+    ttf-ubuntu-font-family \
+    && tar xzvf google-chrome-stable_current_amd64.deb && \
+    rm google-chrome-stable_current_amd64.deb
+
 # copy the requirements file used for dependencies
 COPY requirements.txt .
 
@@ -15,6 +32,25 @@ COPY . .
 
 # Run app.py when the container launches
 ENTRYPOINT ["python", "app.py"]
+
+
+# # # # # # # Python image to use.
+# # # # # # FROM python:3.11-alpine
+
+# # # # # # # Set the working directory to /app
+# # # # # # WORKDIR /app
+
+# # # # # # # copy the requirements file used for dependencies
+# # # # # # COPY requirements.txt .
+
+# # # # # # # Install any needed packages specified in requirements.txt
+# # # # # # RUN pip install --trusted-host pypi.python.org -r requirements.txt
+
+# # # # # # # Copy the rest of the working directory contents into the container at /app
+# # # # # # COPY . .
+
+# # # # # # # Run app.py when the container launches
+# # # # # # ENTRYPOINT ["python", "app.py"]
 # FROM gcr.io/google.com/cloudsdktool/cloud-sdk:slim
 
 # # Set the working directory
