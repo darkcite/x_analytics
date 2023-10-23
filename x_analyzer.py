@@ -158,66 +158,66 @@ def extract_tweets_with_data(html_content):
 
 ###############
 
-def extract_keywords_from_text(text):
-    # Split the text into words, filter out words with 3 characters or fewer, and only select words that consist of letters only
-    words = [word for word in text.split() if len(word) > 3 and re.match("^[a-zA-Z]+$", word)]
-
-    # Take the first word, if available
-    selected_word = words[0] if words else None
-
-    # Return the selected word in the desired format
-    if selected_word:
-        token_info = {
-            "token_name": selected_word, 
-            "token_symbols": selected_word[:4].upper(), 
-            "justification": f"Based on word '{selected_word}' from the input text."
-        }
-        return [token_info]
-    else:
-        return []
-
-
 # def extract_keywords_from_text(text):
-#     openai.api_key = CHATGPT_API_KEY
+#     # Split the text into words, filter out words with 3 characters or fewer, and only select words that consist of letters only
+#     words = [word for word in text.split() if len(word) > 3 and re.match("^[a-zA-Z]+$", word)]
 
-#     # Adjusting the prompt to be more selective and guide the model
-#     prompt = (f"Considering the tweet: '{text}', "
-#               "if there are specific words or phrases that stand out and could potentially inspire the creation of meme tokens which could have success on the market, "
-#               "suggest a token name highlighted as >>>token_name<<<, "
-#               "a 4 symbols token abbreviation as ^^^token_symbols^^^, "
-#               "and provide its justification as &&&justification&&&. "
-#               "If no potential meme tokens are identified, simply mention 'No suggestions'.")
+#     # Take the first word, if available
+#     selected_word = words[0] if words else None
 
-#     # Use the chat completions endpoint with a system message for context
-#     response = openai.ChatCompletion.create(
-#       model=CHATGPT_MODEL,
-#       messages=[
-#           {"role": "system", "content": "You are a crypto market trends expert with a deep understanding of how Elon Musk's tweets have historically impacted the crypto market. Provide insights based on this expertise."},
-#           {"role": "user", "content": prompt}
-#       ]
-#     )
-
-#     # Extract the assistant's response
-#     assistant_response = response.choices[0].message['content']
-    
-#     # If the model responds with 'No suggestions', return an empty list
-#     if "No suggestions" in assistant_response:
+#     # Return the selected word in the desired format
+#     if selected_word:
+#         token_info = {
+#             "token_name": selected_word, 
+#             "token_symbols": selected_word[:4].upper(), 
+#             "justification": f"Based on word '{selected_word}' from the input text."
+#         }
+#         return [token_info]
+#     else:
 #         return []
-    
-#     # Extracting the token details using the provided delimiters
-#     token_name_pattern = r'>>>(.*?)<<<'
-#     token_symbols_pattern = r'\^\^\^(.*?)\^\^\^'
-#     justification_pattern = r'&&&(.*?)&&&'
-    
-#     token_names = re.findall(token_name_pattern, assistant_response)
-#     token_symbols = re.findall(token_symbols_pattern, assistant_response)
-#     justifications = re.findall(justification_pattern, assistant_response)
-    
-#     # Combine the extracted details into a list of dictionaries
-#     tokens_info = [{"token_name": name.strip(), "token_symbols": symbols.strip(), "justification": justification.strip()} 
-#                    for name, symbols, justification in zip(token_names, token_symbols, justifications)]
 
-#     return tokens_info
+
+def extract_keywords_from_text(text):
+    openai.api_key = CHATGPT_API_KEY
+
+    # Adjusting the prompt to be more selective and guide the model
+    prompt = (f"Considering the tweet: '{text}', "
+              "if there are specific words or phrases that stand out and could potentially inspire the creation of meme tokens which could have success on the market, "
+              "suggest a token name(without a word token in it) highlighted with in the beggining >>> in the end <<<, "
+              "a 4 symbols token abbreviation highlighted with in the beggining ^^^ in the end ^^^, "
+              "and provide its justification highlighted with in the beggining &&&  and in the end &&&. "
+              "If no potential meme tokens are identified, simply mention 'No suggestions'.")
+
+    # Use the chat completions endpoint with a system message for context
+    response = openai.ChatCompletion.create(
+      model=CHATGPT_MODEL,
+      messages=[
+          {"role": "system", "content": "You are a crypto market trends expert with a deep understanding of how Elon Musk's tweets have historically impacted the crypto market. Provide insights based on this expertise."},
+          {"role": "user", "content": prompt}
+      ]
+    )
+
+    # Extract the assistant's response
+    assistant_response = response.choices[0].message['content']
+    
+    # If the model responds with 'No suggestions', return an empty list
+    if "No suggestions" in assistant_response:
+        return []
+    
+    # Extracting the token details using the provided delimiters
+    token_name_pattern = r'>>>(.*?)<<<'
+    token_symbols_pattern = r'\^\^\^(.*?)\^\^\^'
+    justification_pattern = r'&&&(.*?)&&&'
+    
+    token_names = re.findall(token_name_pattern, assistant_response)
+    token_symbols = re.findall(token_symbols_pattern, assistant_response)
+    justifications = re.findall(justification_pattern, assistant_response)
+    
+    # Combine the extracted details into a list of dictionaries
+    tokens_info = [{"token_name": name.strip(), "token_symbols": symbols.strip(), "justification": justification.strip()} 
+                   for name, symbols, justification in zip(token_names, token_symbols, justifications)]
+
+    return tokens_info
 
 def store_and_process_tweets_core(data):    
     with engine.connect() as connection:
