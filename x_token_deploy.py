@@ -154,63 +154,66 @@ def deploy_token(token_name, token_symbol):
     
     return txn_receipt
 
-with engine.connect() as connection:
-    # Fetch entries with 'awaiting deployment' status
-    results = connection.execute(text("SELECT keyword_id, token_name, token_symbol FROM Keywords WHERE token_deployment_status = 'awaiting deployment'"))
-    rows = list(results)
-    if not rows:
-        print("No keywords with status 'awaiting deployment' found.")
-        exit()
+def main():
+  with engine.connect() as connection:
+      # Fetch entries with 'awaiting deployment' status
+      results = connection.execute(text("SELECT keyword_id, token_name, token_symbol FROM Keywords WHERE token_deployment_status = 'awaiting deployment'"))
+      rows = list(results)
+      if not rows:
+          print("No keywords with status 'awaiting deployment' found.")
+          exit()
 
-    for row in rows:
-        keyword_id, token_name, token_symbol = row
-        print(f"Starting deployment for token {token_name} ({token_symbol})...")
-        
-        # Update status to "deploying"
-        update_params = {
-            "keyword_id": keyword_id
-        }
-        
-        stmt_update = text("UPDATE Keywords SET token_deployment_status = 'deploying' WHERE keyword_id = :keyword_id")
-        connection.execute(stmt_update, update_params)
-        
-        connection.commit()
-        
-        try:
-            # Deploy the token
-            receipt = deploy_token(token_name, token_symbol)
-            if receipt.status == 1:
-                # If deployment was successful
-                update_success_params = {
-                    "keyword_id": keyword_id
-                }
-                stmt_success = text("UPDATE Keywords SET token_deployment_status = 'successfully deployed' WHERE keyword_id = :keyword_id")
-                connection.execute(stmt_success, update_success_params)
-                
-                print(f"Token {token_name} ({token_symbol}) deployed successfully! Tx Reciept: {receipt}")
-            else:
-                # If the deployment failed for some reason
-                update_failed_params = {
-                    "keyword_id": keyword_id
-                }
-                
-                stmt_failed = text("UPDATE Keywords SET token_deployment_status = 'deployment failed: ' WHERE keyword_id = :keyword_id")
-                connection.execute(stmt_failed, update_failed_params)
-                
-                print(f"Token {token_name} ({token_symbol}) deployment failed!")
-        except Exception as e:
-            # Catch any exceptions during deployment and update the status
-            update_exception_params = {
-                "error_message": str(e),
-                "keyword_id": keyword_id
-            }
-            
-            stmt_exception = text("UPDATE Keywords SET token_deployment_status = 'deployment failed: ' + :error_message WHERE keyword_id = :keyword_id")
-            connection.execute(stmt_exception, update_exception_params)
-            
-            print(f"Token {token_name} ({token_symbol}) deployment failed with error: {e}")
+      for row in rows:
+          keyword_id, token_name, token_symbol = row
+          print(f"Starting deployment for token {token_name} ({token_symbol})...")
+          
+          # Update status to "deploying"
+          update_params = {
+              "keyword_id": keyword_id
+          }
+          
+          stmt_update = text("UPDATE Keywords SET token_deployment_status = 'deploying' WHERE keyword_id = :keyword_id")
+          connection.execute(stmt_update, update_params)
+          
+          connection.commit()
+          
+          try:
+              # Deploy the token
+              receipt = deploy_token(token_name, token_symbol)
+              if receipt.status == 1:
+                  # If deployment was successful
+                  update_success_params = {
+                      "keyword_id": keyword_id
+                  }
+                  stmt_success = text("UPDATE Keywords SET token_deployment_status = 'successfully deployed' WHERE keyword_id = :keyword_id")
+                  connection.execute(stmt_success, update_success_params)
+                  
+                  print(f"Token {token_name} ({token_symbol}) deployed successfully! Tx Reciept: {receipt}")
+              else:
+                  # If the deployment failed for some reason
+                  update_failed_params = {
+                      "keyword_id": keyword_id
+                  }
+                  
+                  stmt_failed = text("UPDATE Keywords SET token_deployment_status = 'deployment failed: ' WHERE keyword_id = :keyword_id")
+                  connection.execute(stmt_failed, update_failed_params)
+                  
+                  print(f"Token {token_name} ({token_symbol}) deployment failed!")
+          except Exception as e:
+              # Catch any exceptions during deployment and update the status
+              update_exception_params = {
+                  "error_message": str(e),
+                  "keyword_id": keyword_id
+              }
+              
+              stmt_exception = text("UPDATE Keywords SET token_deployment_status = 'deployment failed: ' + :error_message WHERE keyword_id = :keyword_id")
+              connection.execute(stmt_exception, update_exception_params)
+              
+              print(f"Token {token_name} ({token_symbol}) deployment failed with error: {e}")
 
-    connection.commit()
+      connection.commit()
 
 
-print("Finished processing tokens!")
+  print("Finished processing tokens!")
+  if __name__ == "__main__":
+    main()

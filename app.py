@@ -5,7 +5,8 @@ import os
 import time
 import threading
 from flask import Flask, render_template
-from x_analyzer import main as x_analyzer_main
+from x_analyzer_proxy import main as x_analyzer_main
+from x_token_deploy import main as x_token_deploy_main
 
 # pylint: disable=C0103
 app = Flask(__name__)
@@ -14,7 +15,8 @@ def run_x_analyzer_periodically():
     """Function to run x_analyzer_main every 120 seconds."""
     while True:
         x_analyzer_main()
-        time.sleep(120)
+        x_token_deploy_main()
+        time.sleep(300)
 
 # Start the background thread at the beginning of your application
 analyzer_thread = threading.Thread(target=run_x_analyzer_periodically)

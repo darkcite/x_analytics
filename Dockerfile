@@ -1,6 +1,6 @@
 # Python image to use.
-# FROM python:3.11
-FROM ubuntu:20.04
+FROM python:3.11
+# FROM ubuntu:20.04
 # Set the working directory to /app
 WORKDIR /app
 
@@ -19,22 +19,22 @@ RUN apt-get update && apt-get install -y \
 
 
 # Clean APT cache, then update and install dependencies
-RUN apt-get clean && apt-get update && apt-get install -y \
-    libxss1 \
-    libappindicator1 \
-    libindicator7 \
-    fonts-liberation \
-    libasound2 \
-    libnspr4 \
-    libnss3 \
-    libx11-xcb1 \
-    xdg-utils \
-    lsb-release
+# RUN apt-get clean && apt-get update && apt-get install -y \
+#     libxss1 \
+#     libappindicator1 \
+#     libindicator7 \
+#     fonts-liberation \
+#     libasound2 \
+#     libnspr4 \
+#     libnss3 \
+#     libx11-xcb1 \
+#     xdg-utils \
+#     lsb-release
 
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable
+# RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+#     && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
+#     && apt-get update \
+#     && apt-get install -y google-chrome-stable
 
 
 RUN apt-get install -y python3 python3-pip
