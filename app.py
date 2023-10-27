@@ -34,29 +34,23 @@ analyzer_thread.start()
 
 @app.route('/')
 def hello():
-    """Return a friendly HTTP greeting."""
-    message = "It's running!"
-    logger.info("Root endpoint accessed.")
-
-    """Get Cloud Run environment variables."""
-    service = os.environ.get('K_SERVICE', 'Unknown service')
-    revision = os.environ.get('K_REVISION', 'Unknown revision')
-
-    return render_template('index.html',
-        message=message,
-        Service=service,
-        Revision=revision)
-
-@app.route('/run_tasks')
-def run_tasks():
-    """Endpoint to manually run the tasks."""
+    """Return a friendly HTTP greeting and run the tasks."""
     try:
         x_analyzer_main()
         x_token_deploy_main()
-        logger.info("Tasks executed successfully via /run_tasks endpoint.")
-        return jsonify({"status": "success", "message": "Tasks executed successfully!"}), 200
+        logger.info("Tasks executed successfully via root endpoint.")
+        
+        message = "Tasks executed and it's running!"
+        """Get Cloud Run environment variables."""
+        service = os.environ.get('K_SERVICE', 'Unknown service')
+        revision = os.environ.get('K_REVISION', 'Unknown revision')
+
+        return render_template('index.html',
+            message=message,
+            Service=service,
+            Revision=revision)
     except Exception as e:
-        logger.error(f"Error executing tasks via /run_tasks endpoint: {str(e)}")
+        logger.error(f"Error executing tasks via root endpoint: {str(e)}")
         return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
